@@ -59,7 +59,8 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, "Empty fields are not allowed", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            binding.signInProgressBar.visibility = View.VISIBLE
+            binding.signInButton.visibility = View.GONE
             loginUser(email, password)
         }
     }
@@ -70,8 +71,10 @@ class SignInFragment : Fragment() {
                 Toast.makeText(context, "Login Successfull", Toast.LENGTH_SHORT).show()
                 navController.navigate(R.id.action_signInFragment_to_homeFragment)
             } else
-                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
 
+                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+            binding.signInProgressBar.visibility = View.GONE
+            binding.signInButton.visibility = View.VISIBLE
         }
     }
 

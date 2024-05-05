@@ -176,6 +176,7 @@
         android:background="@color/purple_700"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp"
+        android:visibility="visible"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -201,10 +202,22 @@
                 android:textSize="24sp">
 
             </TextView>
+
         </RelativeLayout>
 
 
     </com.google.android.material.card.MaterialCardView>
+
+    <ProgressBar
+        android:id="@+id/signUpProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/alreadyRegisteredText"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpRePasswordCard" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

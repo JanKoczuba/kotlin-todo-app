@@ -66,6 +66,8 @@ class SignUpFragment : Fragment() {
                 Toast.makeText(context, "Password is not same", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            binding.signUpProgressBar.visibility = View.VISIBLE
+            binding.signUpButton.visibility = View.GONE
             registerUser(email, password)
         }
     }
@@ -77,7 +79,8 @@ class SignUpFragment : Fragment() {
                 navController.navigate(R.id.action_signUpFragment_to_homeFragment)
             } else
                 Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
+            binding.signUpProgressBar.visibility = View.GONE
+            binding.signUpButton.visibility = View.VISIBLE
         }
     }
 
