@@ -38,6 +38,7 @@ class SignUpFragment : Fragment() {
 
 
         init(view)
+        registerEvents()
     }
 
     private fun init(view: View) {
