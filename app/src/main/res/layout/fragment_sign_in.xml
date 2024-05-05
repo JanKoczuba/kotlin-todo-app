@@ -117,7 +117,7 @@
         app:layout_constraintTop_toBottomOf="@+id/signInButtonCard" />
 
     <TextView
-        android:id="@+id/textViewSignIn"
+        android:id="@+id/textViewSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_regular"
@@ -142,6 +142,7 @@
         app:layout_constraintTop_toBottomOf="@+id/signInPasswordCard">
 
         <RelativeLayout
+            android:id="@+id/signInButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
