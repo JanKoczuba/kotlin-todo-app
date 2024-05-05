@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.koczuba.kotlin_todo_app.R
 
 
-class SingUpFragment : Fragment() {
+class SignUpFragment : Fragment() {
 
 
     override fun onCreateView(
