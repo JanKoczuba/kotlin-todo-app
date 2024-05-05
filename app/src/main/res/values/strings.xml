@@ -7,7 +7,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="type_your_password">Type your Password</string>
     <string name="retype_your_password">ReType your Password</string>
-    <string name="already_registered">Already Registered !!</string>
+    <string name="already_registered">Already Registered!</string>
+    <string name="not_registered">Not Registered?</string>
     <string name="sign_in">Sign In</string>
 
 </resources>
