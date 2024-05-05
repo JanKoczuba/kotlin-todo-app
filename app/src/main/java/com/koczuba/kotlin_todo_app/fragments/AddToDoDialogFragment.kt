@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.koczuba.kotlin_todo_app.databinding.FragmentAddToDoDialogBinding
 
-class AddToDoDialogFragment : Fragment() {
+class AddToDoDialogFragment : DialogFragment() {
 
 
     private lateinit var binding: FragmentAddToDoDialogBinding
