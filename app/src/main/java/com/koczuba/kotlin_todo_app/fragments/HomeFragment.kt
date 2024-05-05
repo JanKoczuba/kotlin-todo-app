@@ -6,21 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.koczuba.kotlin_todo_app.databinding.FragmentHomeBinding
+import com.koczuba.kotlin_todo_app.utils.adapter.TaskAdapter
+import com.koczuba.kotlin_todo_app.utils.model.ToDoData
 
 
-class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClickListener {
+class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClickListener,
+    TaskAdapter.TaskAdapterInterface {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var authId: String
     private var addTaskDialogFragment: AddToDoDialogFragment? = null
+    private lateinit var taskAdapter: TaskAdapter
+    private lateinit var toDoItemList: MutableList<ToDoData>
 
 
     override fun onCreateView(
@@ -38,6 +47,10 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
 
 
         init(view)
+        getTaskFromFirebase()
+
+
+
         binding.addTaskButton.setOnClickListener {
             registerEvents()
         }
@@ -50,6 +63,13 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
         authId = auth.currentUser!!.uid
         database = Firebase.database.reference.child("Tasks").child(authId)
 
+        binding.mainRecyclerView.setHasFixedSize(true)
+        binding.mainRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        toDoItemList = mutableListOf()
+        taskAdapter = TaskAdapter(toDoItemList)
+        taskAdapter.setListener(this)
+        binding.mainRecyclerView.adapter = taskAdapter
     }
 
     private fun registerEvents() {
@@ -59,6 +79,33 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
             childFragmentManager,
             "AddToDoDialogFragment"
         )
+    }
+
+
+    private fun getTaskFromFirebase() {
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                toDoItemList.clear()
+                for (taskSnapshot in snapshot.children) {
+                    val todoTask =
+                        taskSnapshot.key?.let { ToDoData(it, taskSnapshot.value.toString()) }
+
+                    if (todoTask != null) {
+                        toDoItemList.add(todoTask)
+                    }
+
+                }
+                taskAdapter.notifyDataSetChanged()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show()
+            }
+
+
+        })
     }
 
     override fun saveTask(todoTask: String, todoEdit: TextInputEditText) {
@@ -74,6 +121,19 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
                 }
             }
         addTaskDialogFragment!!.dismiss()
+    }
+
+    override fun onDeleteItemClicked(toDoData: ToDoData, position: Int) {
+        database.child(toDoData.taskId).removeValue().addOnCompleteListener {
+            if (it.isSuccessful) {
+                Toast.makeText(context, "Deleted Successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }    }
+
+    override fun onEditItemClicked(toDoData: ToDoData, position: Int) {
+        TODO("Not yet implemented")
     }
 
 }
