@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.koczuba.kotlin_todo_app.databinding.FragmentHomeBinding
 
 
@@ -17,6 +19,7 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
     private lateinit var binding: FragmentHomeBinding
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var authId: String
     private var addTaskDialogFragment: AddToDoDialogFragment? = null
 
 
@@ -44,7 +47,8 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
 
     private fun init(view: View) {
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().reference
+        authId = auth.currentUser!!.uid
+        database = Firebase.database.reference.child("Tasks").child(authId)
 
     }
 
@@ -58,7 +62,18 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
     }
 
     override fun saveTask(todoTask: String, todoEdit: TextInputEditText) {
-        TODO("Not yet implemented")
+        database
+            .push().setValue(todoTask)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(context, "Task Added Successfully", Toast.LENGTH_SHORT).show()
+                    todoEdit.text = null
+
+                } else {
+                    Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        addTaskDialogFragment!!.dismiss()
     }
 
 }
