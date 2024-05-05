@@ -36,12 +36,17 @@ class AddToDoDialogFragment : DialogFragment() {
 
     private fun registerEvents() {
 
-        binding.addTaskButton.setOnClickListener {
+        binding.signInButtonCard.setOnClickListener {
             val todoTask = binding.todoTaskEt.text.toString()
             if (todoTask.isEmpty()) {
                 return@setOnClickListener
             }
             listener?.saveTask(todoTask, binding.todoTaskEt)
+
+        }
+
+        binding.todoClose.setOnClickListener {
+            dismiss()
 
         }
     }
