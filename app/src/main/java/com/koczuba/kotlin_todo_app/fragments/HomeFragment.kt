@@ -73,11 +73,16 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
     }
 
     private fun registerEvents() {
+
+        if (addTaskDialogFragment != null)
+            childFragmentManager.beginTransaction().remove(addTaskDialogFragment!!).commit()
+
+
         addTaskDialogFragment = AddToDoDialogFragment()
         addTaskDialogFragment!!.setListener(this)
         addTaskDialogFragment!!.show(
             childFragmentManager,
-            "AddToDoDialogFragment"
+            AddToDoDialogFragment.TAG
         )
     }
 
@@ -123,6 +128,19 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
         addTaskDialogFragment!!.dismiss()
     }
 
+    override fun updateTask(toDoData: ToDoData, todoEdit: TextInputEditText) {
+        val map = HashMap<String, Any>()
+        map[toDoData.taskId] = toDoData.taskDescription
+        database.updateChildren(map).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Toast.makeText(context, "Updated Successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+            }
+            addTaskDialogFragment!!.dismiss()
+        }
+    }
+
     override fun onDeleteItemClicked(toDoData: ToDoData, position: Int) {
         database.child(toDoData.taskId).removeValue().addOnCompleteListener {
             if (it.isSuccessful) {
@@ -130,10 +148,20 @@ class HomeFragment : Fragment(), AddToDoDialogFragment.OnDialogAddTaskButtonClic
             } else {
                 Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
             }
-        }    }
+        }
+    }
 
     override fun onEditItemClicked(toDoData: ToDoData, position: Int) {
-        TODO("Not yet implemented")
+        if (addTaskDialogFragment != null)
+            childFragmentManager.beginTransaction().remove(addTaskDialogFragment!!).commit()
+
+        addTaskDialogFragment =
+            AddToDoDialogFragment.newInstance(toDoData.taskId, toDoData.taskDescription)
+        addTaskDialogFragment!!.setListener(this)
+        addTaskDialogFragment!!.show(
+            childFragmentManager,
+            AddToDoDialogFragment.TAG
+        )
     }
 
 }
